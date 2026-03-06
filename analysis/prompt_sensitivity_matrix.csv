@@ -1,0 +1,11 @@
+prompt1,prompt2,similarity
+brief,detailed,0.8024624929999999
+brief,expert,0.894610323
+expert,detailed,0.856758732
+original,brief,0.9002738100000001
+original,detailed,0.8402751330000001
+original,expert,0.923431532
+original,step_by_step,0.840196214
+step_by_step,brief,0.797709524
+step_by_step,detailed,0.8505837100000001
+step_by_step,expert,0.8393891160000001
