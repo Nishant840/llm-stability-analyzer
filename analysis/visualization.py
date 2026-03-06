@@ -2,15 +2,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-INPUT_FILE = "analysis/final_results.csv"
+INPUT_FILE = "analysis/final_evaluation.csv"
 
 df = pd.read_csv(INPUT_FILE)
+df = df.sort_values("final_stability_score", ascending=False)
 
 plt.figure(figsize=(10,6))
 
 sns.barplot(
     x="qid",
-    y="stability_score",
+    y="final_stability_score",
     data=df,
     palette="viridis"
 )
