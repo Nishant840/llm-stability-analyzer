@@ -1,0 +1,11 @@
+qid,question,category
+Q1,What causes seasons on Earth?,reasoning
+Q2,Who developed the theory of relativity?,factual
+Q3,Why is the sky blue?,reasoning
+Q4,What is the capital of Japan?,factual
+Q5,Is artificial intelligence dangerous?,ambiguous
+Q6,How does photosynthesis work?,reasoning
+Q7,Who wrote the play Hamlet?,factual
+Q8,Why did the Roman Empire fall?,reasoning
+Q9,Should governments regulate AI?,ambiguous
+Q10,What is the boiling point of water?,factual
