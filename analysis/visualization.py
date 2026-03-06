@@ -27,6 +27,15 @@ plt.show()
 
 plt.figure(figsize=(8,5))
 
+sns.barplot(
+    x="qid",
+    y="min_similarity",
+    data=df
+)
+
+plt.title("Worst-Case Similarity by Question")
+plt.show()
+
 sns.histplot(
     df["stability_score"],
     bins=8,

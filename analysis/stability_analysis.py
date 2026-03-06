@@ -28,6 +28,7 @@ for qid, group in df.groupby("qid"):
 
         similarities.append(sim)
 
+    min_similarity = min(similarities)
     avg_similarity = np.mean(similarities)
     std_similarity = np.std(similarities)
 
@@ -37,6 +38,7 @@ for qid, group in df.groupby("qid"):
         "qid": qid,
         "avg_similarity": avg_similarity,
         "std_similarity": std_similarity,
+        "min_similarity": min_similarity,
         "stability_score": stability_score
     })
 

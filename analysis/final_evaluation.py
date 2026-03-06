@@ -12,9 +12,10 @@ df = sim_df.merge(contr_df, on="qid")
 
 # improved stability score
 df["final_stability_score"] = (
-    0.7 * df["avg_similarity"]
-    - 0.2 * df["std_similarity"]
-    - 0.1 * df["contradiction_rate"]
+    0.6 * df["avg_similarity"]
+    + 0.2 * df["min_similarity"]
+    - 0.15 * df["std_similarity"]
+    - 0.05 * df["contradiction_rate"]
 )
 
 # rank questions by stability
