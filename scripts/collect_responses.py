@@ -8,7 +8,14 @@ OUTPUT_FILE = "data/responses/responses.csv"
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-MODEL = "llama-3.1-8b-instant"
+# Multiple models
+MODELS = [
+    "llama-3.1-8b-instant",
+    "llama-3.3-70b-versatile",
+    "qwen/qwen3-32b",
+    "moonshotai/kimi-k2-instruct",
+    "groq/compound-mini"
+]
 
 rows = []
 
@@ -16,36 +23,47 @@ with open(INPUT_FILE, "r", encoding="utf-8") as f:
     reader = csv.DictReader(f)
     prompts = list(reader)
 
-for row in tqdm(prompts):
+for model in MODELS:
 
-    prompt = row["prompt_text"]
+    print(f"\nRunning model: {model}\n")
 
-    try:
-        completion = client.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7
-        )
+    for row in tqdm(prompts):
 
-        answer = completion.choices[0].message.content
+        prompt = row["prompt_text"]
 
-    except Exception as e:
-        print("Error:", e)
-        answer = "ERROR"
+        try:
+            completion = client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7
+            )
 
-    rows.append({
-        "qid": row["qid"],
-        "prompt_type": row["prompt_type"],
-        "prompt_text": prompt,
-        "response": answer
-    })
+            answer = completion.choices[0].message.content
+
+        except Exception as e:
+            print("Error:", e)
+            answer = "ERROR"
+
+        rows.append({
+            "model": model,                
+            "qid": row["qid"],
+            "prompt_type": row["prompt_type"],
+            "prompt_text": prompt,
+            "response": answer
+        })
 
 with open(OUTPUT_FILE, "w", newline="", encoding="utf-8") as f:
     writer = csv.DictWriter(
         f,
-        fieldnames=["qid","prompt_type","prompt_text","response"]
+        fieldnames=[
+            "model",                     
+            "qid",
+            "prompt_type",
+            "prompt_text",
+            "response"
+        ]
     )
     writer.writeheader()
     writer.writerows(rows)

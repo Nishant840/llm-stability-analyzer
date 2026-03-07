@@ -20,7 +20,7 @@ nli = pipeline(
 
 results = []
 
-for qid, group in df.groupby("qid"):
+for (model, qid), group in df.groupby(["model", "qid"]):
 
     responses = group["response"].tolist()
 
@@ -52,6 +52,7 @@ for qid, group in df.groupby("qid"):
     contradiction_rate = contradictions / total_pairs
 
     results.append({
+        "model": model,
         "qid": qid,
         "contradiction_rate": contradiction_rate
     })

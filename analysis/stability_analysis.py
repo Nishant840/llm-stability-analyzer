@@ -11,7 +11,7 @@ df = pd.read_csv(INPUT_FILE)
 
 results = []
 
-for qid, group in df.groupby("qid"):
+for (model, qid), group in df.groupby(["model", "qid"]):
 
     responses = group["response"].tolist()
 
@@ -35,6 +35,7 @@ for qid, group in df.groupby("qid"):
     stability_score = avg_similarity - std_similarity
 
     results.append({
+        "model": model,
         "qid": qid,
         "avg_similarity": avg_similarity,
         "std_similarity": std_similarity,
