@@ -2,50 +2,60 @@ qid,prompt_type,prompt_text
 Q1,original,What causes seasons on Earth?
 Q1,step_by_step,Explain step by step: What causes seasons on Earth?
 Q1,brief,Answer briefly: What causes seasons on Earth?
-Q1,expert,You sre an expert. Answer the following question: What causes seasons on Earth?
+Q1,expert,You are an expert. Answer the following question: What causes seasons on Earth?
 Q1,detailed,Provide detailed explanation: What causes seasons on Earth?
+Q1,noisy,What causes seasons on Earth? please explain
 Q2,original,Who developed the theory of relativity?
 Q2,step_by_step,Explain step by step: Who developed the theory of relativity?
 Q2,brief,Answer briefly: Who developed the theory of relativity?
-Q2,expert,You sre an expert. Answer the following question: Who developed the theory of relativity?
+Q2,expert,You are an expert. Answer the following question: Who developed the theory of relativity?
 Q2,detailed,Provide detailed explanation: Who developed the theory of relativity?
+Q2,noisy,who developed the theory of relativity?
 Q3,original,Why is the sky blue?
 Q3,step_by_step,Explain step by step: Why is the sky blue?
 Q3,brief,Answer briefly: Why is the sky blue?
-Q3,expert,You sre an expert. Answer the following question: Why is the sky blue?
+Q3,expert,You are an expert. Answer the following question: Why is the sky blue?
 Q3,detailed,Provide detailed explanation: Why is the sky blue?
+Q3,noisy,Why is the sky blue? briefly
 Q4,original,What is the capital of Japan?
 Q4,step_by_step,Explain step by step: What is the capital of Japan?
 Q4,brief,Answer briefly: What is the capital of Japan?
-Q4,expert,You sre an expert. Answer the following question: What is the capital of Japan?
+Q4,expert,You are an expert. Answer the following question: What is the capital of Japan?
 Q4,detailed,Provide detailed explanation: What is the capital of Japan?
+Q4,noisy,What is the capital of Japan?
 Q5,original,Is artificial intelligence dangerous?
 Q5,step_by_step,Explain step by step: Is artificial intelligence dangerous?
 Q5,brief,Answer briefly: Is artificial intelligence dangerous?
-Q5,expert,You sre an expert. Answer the following question: Is artificial intelligence dangerous?
+Q5,expert,You are an expert. Answer the following question: Is artificial intelligence dangerous?
 Q5,detailed,Provide detailed explanation: Is artificial intelligence dangerous?
+Q5,noisy,Is artificial intelligence dangerous?
 Q6,original,How does photosynthesis work?
 Q6,step_by_step,Explain step by step: How does photosynthesis work?
 Q6,brief,Answer briefly: How does photosynthesis work?
-Q6,expert,You sre an expert. Answer the following question: How does photosynthesis work?
+Q6,expert,You are an expert. Answer the following question: How does photosynthesis work?
 Q6,detailed,Provide detailed explanation: How does photosynthesis work?
+Q6,noisy,tell me how does photosynthesis work?
 Q7,original,Who wrote the play Hamlet?
 Q7,step_by_step,Explain step by step: Who wrote the play Hamlet?
 Q7,brief,Answer briefly: Who wrote the play Hamlet?
-Q7,expert,You sre an expert. Answer the following question: Who wrote the play Hamlet?
+Q7,expert,You are an expert. Answer the following question: Who wrote the play Hamlet?
 Q7,detailed,Provide detailed explanation: Who wrote the play Hamlet?
+Q7,noisy,Who wrote the play Hamlet? please explain
 Q8,original,Why did the Roman Empire fall?
 Q8,step_by_step,Explain step by step: Why did the Roman Empire fall?
 Q8,brief,Answer briefly: Why did the Roman Empire fall?
-Q8,expert,You sre an expert. Answer the following question: Why did the Roman Empire fall?
+Q8,expert,You are an expert. Answer the following question: Why did the Roman Empire fall?
 Q8,detailed,Provide detailed explanation: Why did the Roman Empire fall?
+Q8,noisy,Why did the Roman Empire fall? please explain
 Q9,original,Should governments regulate AI?
 Q9,step_by_step,Explain step by step: Should governments regulate AI?
 Q9,brief,Answer briefly: Should governments regulate AI?
-Q9,expert,You sre an expert. Answer the following question: Should governments regulate AI?
+Q9,expert,You are an expert. Answer the following question: Should governments regulate AI?
 Q9,detailed,Provide detailed explanation: Should governments regulate AI?
+Q9,noisy,can you explain should governments regulate ai?
 Q10,original,What is the boiling point of water?
 Q10,step_by_step,Explain step by step: What is the boiling point of water?
 Q10,brief,Answer briefly: What is the boiling point of water?
-Q10,expert,You sre an expert. Answer the following question: What is the boiling point of water?
+Q10,expert,You are an expert. Answer the following question: What is the boiling point of water?
 Q10,detailed,Provide detailed explanation: What is the boiling point of water?
+Q10,noisy,what is the boiling point of water?
