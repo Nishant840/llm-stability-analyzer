@@ -1,0 +1,11 @@
+groq
+sentence-transformers
+scikit-learn
+pandas
+numpy
+matplotlib
+seaborn
+tqdm
+streamlit
+transformers
+torch
