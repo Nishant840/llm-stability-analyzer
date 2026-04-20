@@ -1,6 +1,6 @@
 import pandas as pd
 
-INPUT_FILE = "analysis/prompt_pair_similarities.csv"
+INPUT_FILE = "analysis/results/prompt_pair_similarities.csv"
 
 df = pd.read_csv(INPUT_FILE)
 
@@ -13,4 +13,4 @@ matrix_df = (
 print("\nAverage Prompt Pair Similarity\n")
 print(matrix_df)
 
-matrix_df.to_csv("analysis/prompt_sensitivity_matrix.csv", index=False)
+matrix_df.to_csv("analysis/results/prompt_sensitivity_matrix.csv", index=False)

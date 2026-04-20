@@ -3,7 +3,7 @@ import itertools
 from transformers import pipeline
 
 INPUT_FILE = "data/responses/responses.csv"
-OUTPUT_FILE = "analysis/contradiction_results.csv"
+OUTPUT_FILE = "analysis/results/contradiction_results.csv"
 
 df = pd.read_csv(INPUT_FILE)
 

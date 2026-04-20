@@ -36,4 +36,4 @@ pairs_df = pd.DataFrame(pairs)
 print("\nPrompt Pair Similarities\n")
 print(pairs_df.head())
 
-pairs_df.to_csv("analysis/prompt_pair_similarities.csv", index=False)
+pairs_df.to_csv("analysis/results/prompt_pair_similarities.csv", index=False)

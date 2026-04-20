@@ -2,7 +2,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-INPUT_FILE = "analysis/prompt_sensitivity_matrix.csv"
+INPUT_FILE = "analysis/results/prompt_sensitivity_matrix.csv"
 
 df = pd.read_csv(INPUT_FILE)
 
@@ -23,6 +23,6 @@ sns.heatmap(
 plt.title("Prompt Sensitivity Heatmap")
 plt.tight_layout()
 
-plt.savefig("analysis/prompt_sensitivity_heatmap.png")
+plt.savefig("analysis/plots/prompt_sensitivity_heatmap.png")
 
 plt.show()

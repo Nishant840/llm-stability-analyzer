@@ -15,8 +15,8 @@ and worst-case robustness metrics.
 """
 )
 
-final_df = pd.read_csv("analysis/final_evaluation.csv")
-heatmap_df = pd.read_csv("analysis/prompt_sensitivity_matrix.csv")
+final_df = pd.read_csv("analysis/results/final_evaluation.csv")
+heatmap_df = pd.read_csv("analysis/results/prompt_sensitivity_matrix.csv")
 
 st.header("Model Stability Leaderboard")
 

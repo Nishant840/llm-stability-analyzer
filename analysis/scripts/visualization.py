@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-INPUT_FILE = "analysis/final_evaluation.csv"
+INPUT_FILE = "analysis/results/final_evaluation.csv"
 
 df = pd.read_csv(INPUT_FILE)
 
@@ -24,7 +24,7 @@ plt.ylabel("Final Stability Score")
 plt.xticks(rotation=30)
 
 plt.tight_layout()
-plt.savefig("analysis/model_stability_comparison.png")
+plt.savefig("analysis/plots/model_stability_comparison.png")
 
 plt.show()
 
@@ -42,7 +42,7 @@ plt.xlabel("Question ID")
 plt.ylabel("Final Stability Score")
 
 plt.tight_layout()
-plt.savefig("analysis/stability_by_question.png")
+plt.savefig("analysis/plots/stability_by_question.png")
 
 plt.show()
 
@@ -61,7 +61,7 @@ plt.ylabel("Minimum Similarity")
 plt.xticks(rotation=30)
 
 plt.tight_layout()
-plt.savefig("analysis/worst_case_similarity.png")
+plt.savefig("analysis/plots/worst_case_similarity.png")
 
 plt.show()
 
@@ -77,6 +77,6 @@ plt.title("Distribution of Stability Scores")
 plt.xlabel("Final Stability Score")
 
 plt.tight_layout()
-plt.savefig("analysis/stability_distribution.png")
+plt.savefig("analysis/plots/stability_distribution.png")
 
 plt.show()

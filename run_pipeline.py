@@ -4,13 +4,13 @@ import sys
 steps = [
     "scripts.generate_prompts",
     "scripts.collect_responses",
-    "analysis.stability_analysis",
-    "analysis.contradiction_analysis",
-    "analysis.final_evaluation",
-    "analysis.prompt_sensitivity",
-    "analysis.prompt_sensitivity_matrix",
-    "analysis.prompt_heatmap",
-    "analysis.visualization"
+    "analysis.scripts.stability_analysis",
+    "analysis.scripts.contradiction_analysis",
+    "analysis.scripts.final_evaluation",
+    "analysis.scripts.prompt_sensitivity",
+    "analysis.scripts.prompt_sensitivity_matrix",
+    "analysis.scripts.prompt_heatmap",
+    "analysis.scripts.visualization"
 ]
 
 for step in steps:

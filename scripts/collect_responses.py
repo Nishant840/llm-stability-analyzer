@@ -12,9 +12,8 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 MODELS = [
     "llama-3.1-8b-instant",
     "llama-3.3-70b-versatile",
-    "qwen/qwen3-32b",
-    "moonshotai/kimi-k2-instruct",
-    "groq/compound-mini"
+    "mixtral-8x7b-32768",
+    "gemma2-9b-it"
 ]
 
 rows = []

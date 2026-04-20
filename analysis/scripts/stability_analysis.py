@@ -5,7 +5,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from models.embedding_model import get_embeddings
 
 INPUT_FILE = "data/responses/responses.csv"
-OUTPUT_FILE = "analysis/final_results.csv"
+OUTPUT_FILE = "analysis/results/final_results.csv"
 
 df = pd.read_csv(INPUT_FILE)
 
