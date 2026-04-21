@@ -11,7 +11,7 @@ df = pd.read_csv(INPUT_FILE)
 
 results = []
 
-for (model, qid), group in df.groupby(["model", "qid"]):
+for (model, temperature, qid), group in df.groupby(["model", "temperature", "qid"]):
 
     responses = group["response"].tolist()
 
@@ -36,6 +36,7 @@ for (model, qid), group in df.groupby(["model", "qid"]):
 
     results.append({
         "model": model,
+        "temperature": temperature,
         "qid": qid,
         "avg_similarity": avg_similarity,
         "std_similarity": std_similarity,

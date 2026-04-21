@@ -5,7 +5,7 @@ INPUT_FILE = "analysis/results/prompt_pair_similarities.csv"
 df = pd.read_csv(INPUT_FILE)
 
 matrix_df = (
-    df.groupby(["prompt1", "prompt2"])["similarity"]
+    df.groupby(["temperature", "prompt1", "prompt2"])["similarity"]
     .mean()
     .reset_index()
 )

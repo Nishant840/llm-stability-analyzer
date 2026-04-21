@@ -6,7 +6,7 @@ CONTR_FILE = "analysis/results/contradiction_results.csv"
 sim_df = pd.read_csv(SIM_FILE)
 contr_df = pd.read_csv(CONTR_FILE)
 
-df = sim_df.merge(contr_df, on=["model", "qid"])
+df = sim_df.merge(contr_df, on=["model", "temperature", "qid"])
 
 df["final_stability_score"] = (
     0.6 * df["avg_similarity"]

@@ -10,7 +10,7 @@ df = pd.read_csv(INPUT_FILE)
 
 pairs = []
 
-for qid, group in df.groupby("qid"):
+for (temperature, qid), group in df.groupby(["temperature", "qid"]):
 
     responses = group["response"].tolist()
     prompt_types = group["prompt_type"].tolist()
@@ -25,6 +25,7 @@ for qid, group in df.groupby("qid"):
         )[0][0]
 
         pairs.append({
+            "temperature": temperature,
             "qid": qid,
             "prompt1": prompt_types[i],
             "prompt2": prompt_types[j],
