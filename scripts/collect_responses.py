@@ -1,5 +1,6 @@
 import csv
 import os
+import time
 from groq import Groq
 from tqdm import tqdm
 
@@ -36,20 +37,37 @@ for model in MODELS:
 
             prompt = row["prompt_text"]
 
-            try:
-                completion = client.chat.completions.create(
-                    model=model,
-                    messages=[
-                        {"role": "user", "content": prompt}
-                    ],
-                    temperature=temp
-                )
+            max_retries = 5
+            base_delay = 5
+            
+            for attempt in range(max_retries):
+                try:
+                    completion = client.chat.completions.create(
+                        model=model,
+                        messages=[
+                            {"role": "user", "content": prompt}
+                        ],
+                        temperature=temp,
+                        max_tokens=600  # Cap extreme length to save tokens
+                    )
 
-                answer = completion.choices[0].message.content
-                length = len(answer.split()) if answer else 0
+                    answer = completion.choices[0].message.content
+                    length = len(answer.split()) if answer else 0
+                    break  # Success, exit the retry loop
 
-            except Exception as e:
-                print("Error:", e)
+                except Exception as e:
+                    error_msg = str(e).lower()
+                    if "429" in error_msg or "rate_limit" in error_msg or "rate limit" in error_msg:
+                        delay = base_delay * (2 ** attempt)
+                        print(f"   [Rate Limit] Retrying in {delay}s... (Attempt {attempt+1}/{max_retries})")
+                        time.sleep(delay)
+                    else:
+                        print(f"   [API Error] {e}")
+                        answer = "ERROR"
+                        length = 0
+                        break
+            else:
+                print("   [Failed] Exhausted all retries. Marking as ERROR.")
                 answer = "ERROR"
                 length = 0
 
@@ -62,6 +80,9 @@ for model in MODELS:
                 "prompt_text": prompt,
                 "response": answer
             })
+            
+            # Sleep to prevent hitting Groq API rate limits
+            time.sleep(2)
 
 with open(OUTPUT_FILE, "w", newline="", encoding="utf-8") as f:
     writer = csv.DictWriter(
