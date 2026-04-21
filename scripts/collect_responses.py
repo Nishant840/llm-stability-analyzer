@@ -17,6 +17,8 @@ MODELS = [
     "groq/compound-mini"
 ]
 
+TEMPERATURES = [0.1, 0.5, 1.0, 1.5, 2.0]
+
 rows = []
 
 with open(INPUT_FILE, "r", encoding="utf-8") as f:
@@ -27,38 +29,47 @@ for model in MODELS:
 
     print(f"\nRunning model: {model}\n")
 
-    for row in tqdm(prompts):
+    for temp in TEMPERATURES:
+        print(f" Temperature: {temp}")
 
-        prompt = row["prompt_text"]
+        for row in tqdm(prompts, leave=False):
 
-        try:
-            completion = client.chat.completions.create(
-                model=model,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.7
-            )
+            prompt = row["prompt_text"]
 
-            answer = completion.choices[0].message.content
+            try:
+                completion = client.chat.completions.create(
+                    model=model,
+                    messages=[
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=temp
+                )
 
-        except Exception as e:
-            print("Error:", e)
-            answer = "ERROR"
+                answer = completion.choices[0].message.content
+                length = len(answer.split()) if answer else 0
 
-        rows.append({
-            "model": model,                
-            "qid": row["qid"],
-            "prompt_type": row["prompt_type"],
-            "prompt_text": prompt,
-            "response": answer
-        })
+            except Exception as e:
+                print("Error:", e)
+                answer = "ERROR"
+                length = 0
+
+            rows.append({
+                "model": model,
+                "temperature": temp,
+                "response_length": length,
+                "qid": row["qid"],
+                "prompt_type": row["prompt_type"],
+                "prompt_text": prompt,
+                "response": answer
+            })
 
 with open(OUTPUT_FILE, "w", newline="", encoding="utf-8") as f:
     writer = csv.DictWriter(
         f,
         fieldnames=[
-            "model",                     
+            "model",
+            "temperature",
+            "response_length",
             "qid",
             "prompt_type",
             "prompt_text",
