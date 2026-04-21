@@ -59,3 +59,21 @@ Q10,brief,Answer briefly: What is the boiling point of water?
 Q10,expert,You are an expert. Answer the following question: What is the boiling point of water?
 Q10,detailed,Provide detailed explanation: What is the boiling point of water?
 Q10,noisy,what is the boiling point of water?
+Q11,original,What is why how that so?
+Q11,step_by_step,Explain step by step: What is why how that so?
+Q11,brief,Answer briefly: What is why how that so?
+Q11,expert,You are an expert. Answer the following question: What is why how that so?
+Q11,detailed,Provide detailed explanation: What is why how that so?
+Q11,noisy,what is why how that so?
+Q12,original,Has anyone really been far even as decided to use?
+Q12,step_by_step,Explain step by step: Has anyone really been far even as decided to use?
+Q12,brief,Answer briefly: Has anyone really been far even as decided to use?
+Q12,expert,You are an expert. Answer the following question: Has anyone really been far even as decided to use?
+Q12,detailed,Provide detailed explanation: Has anyone really been far even as decided to use?
+Q12,noisy,Has anyone really been far even as decided to use? please explain
+Q13,original,Colorless green ideas sleep furiously?
+Q13,step_by_step,Explain step by step: Colorless green ideas sleep furiously?
+Q13,brief,Answer briefly: Colorless green ideas sleep furiously?
+Q13,expert,You are an expert. Answer the following question: Colorless green ideas sleep furiously?
+Q13,detailed,Provide detailed explanation: Colorless green ideas sleep furiously?
+Q13,noisy,Colorless green ideas sleep furiously?
