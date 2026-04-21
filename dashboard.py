@@ -28,6 +28,15 @@ try:
 except FileNotFoundError:
     has_responses = False
 
+st.header("🏅 Overall Model Stability (All Temperatures Averaged)")
+fig_overall, ax_overall = plt.subplots(figsize=(10, 5))
+overall_df = final_df.groupby("model")["final_stability_score"].mean().sort_values(ascending=False).reset_index()
+sns.barplot(data=overall_df, x="model", y="final_stability_score", palette="viridis", ax=ax_overall)
+ax_overall.set_title("Model vs Overall Mean Stability Score")
+ax_overall.set_ylim(0, 1.05)
+plt.xticks(rotation=25)
+st.pyplot(fig_overall, use_container_width=True)
+
 st.header("Stability vs. Temperature")
 fig_temp, ax_temp = plt.subplots(figsize=(10, 5))
 sns.lineplot(data=final_df, x="temperature", y="final_stability_score", hue="model", marker="o", ax=ax_temp)

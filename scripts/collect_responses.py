@@ -1,26 +1,44 @@
 import csv
 import os
 import time
-from groq import Groq
+from openai import OpenAI
 from tqdm import tqdm
 
 INPUT_FILE = "data/prompts/prompts.csv"
 OUTPUT_FILE = "data/responses/responses.csv"
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("OPENROUTER_API_KEY")
+)
 
-# Multiple models
+# Multiple models with fixed valid OpenRouter IDs
 MODELS = [
-    "llama-3.1-8b-instant",
-    "llama-3.3-70b-versatile",
-    "qwen/qwen3-32b",
-    "mixtral-8x7b-32768",
-    "groq/compound-mini"
+    "meta-llama/llama-3.2-1b-instruct",
+    "meta-llama/llama-3.1-8b-instruct",
+    "google/gemma-2-27b-it",
+    "meta-llama/llama-3.3-70b-instruct",
+    "openai/gpt-oss-120b:free"
 ]
 
-TEMPERATURES = [0.1, 1.0, 2.0]
+TEMPERATURES = [0.1, 0.5, 1.0, 1.5, 2.0]
+FIELDNAMES = ["model", "temperature", "response_length", "qid", "prompt_type", "prompt_text", "response"]
 
-rows = []
+existing_configs = set()
+
+# Load memory cache from file to avoid re-running API calls
+if os.path.exists(OUTPUT_FILE) and os.path.getsize(OUTPUT_FILE) > 0:
+    with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            existing_configs.add(
+                (row["model"], float(row["temperature"]), row["qid"], row["prompt_type"])
+            )
+else:
+    # Initialize header
+    with open(OUTPUT_FILE, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+        writer.writeheader()
 
 with open(INPUT_FILE, "r", encoding="utf-8") as f:
     reader = csv.DictReader(f)
@@ -34,6 +52,10 @@ for model in MODELS:
         print(f" Temperature: {temp}")
 
         for row in tqdm(prompts, leave=False):
+            
+            # Resume Checkpoint Logic: Skip if already verified
+            if (model, float(temp), row["qid"], row["prompt_type"]) in existing_configs:
+                continue
 
             prompt = row["prompt_text"]
 
@@ -71,33 +93,22 @@ for model in MODELS:
                 answer = "ERROR"
                 length = 0
 
-            rows.append({
-                "model": model,
-                "temperature": temp,
-                "response_length": length,
-                "qid": row["qid"],
-                "prompt_type": row["prompt_type"],
-                "prompt_text": prompt,
-                "response": answer
-            })
+            # Stream instantly to CSV instead of waiting for the end
+            with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+                writer.writerow({
+                    "model": model,
+                    "temperature": temp,
+                    "response_length": length,
+                    "qid": row["qid"],
+                    "prompt_type": row["prompt_type"],
+                    "prompt_text": prompt,
+                    "response": answer
+                })
             
-            # Sleep to prevent hitting Groq API rate limits
-            time.sleep(2)
-
-with open(OUTPUT_FILE, "w", newline="", encoding="utf-8") as f:
-    writer = csv.DictWriter(
-        f,
-        fieldnames=[
-            "model",
-            "temperature",
-            "response_length",
-            "qid",
-            "prompt_type",
-            "prompt_text",
-            "response"
-        ]
-    )
-    writer.writeheader()
-    writer.writerows(rows)
+            existing_configs.add((model, float(temp), row["qid"], row["prompt_type"]))
+            
+            # Wait 4 seconds to pace OpenRouter correctly
+            time.sleep(4)
 
 print("Responses collected.")
