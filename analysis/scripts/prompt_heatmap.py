@@ -6,7 +6,9 @@ INPUT_FILE = "analysis/results/prompt_sensitivity_matrix.csv"
 
 df = pd.read_csv(INPUT_FILE)
 
-heatmap_data = df.pivot(
+agg_df = df.groupby(["prompt1", "prompt2"])["similarity"].mean().reset_index()
+
+heatmap_data = agg_df.pivot(
     index="prompt1",
     columns="prompt2",
     values="similarity"

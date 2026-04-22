@@ -17,8 +17,7 @@ MODELS = [
     "meta-llama/llama-3.2-1b-instruct",
     "meta-llama/llama-3.1-8b-instruct",
     "google/gemma-2-27b-it",
-    "meta-llama/llama-3.3-70b-instruct",
-    "openai/gpt-oss-120b:free"
+    "meta-llama/llama-3.3-70b-instruct"
 ]
 
 TEMPERATURES = [0.1, 0.5, 1.0, 1.5, 2.0]

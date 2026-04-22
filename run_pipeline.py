@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import os
 
 steps = [
     "scripts.generate_prompts",
@@ -14,6 +15,10 @@ steps = [
 ]
 
 for step in steps:
+    if step == "analysis.scripts.contradiction_analysis" and os.path.exists("analysis/results/contradiction_results.csv"):
+        print(f"\n⏩ Skipping: {step} (Results already generated! This saves 1 hour of CPU time!)")
+        continue
+
     print(f"\nRunning: {step}\n")
 
     result = subprocess.run(

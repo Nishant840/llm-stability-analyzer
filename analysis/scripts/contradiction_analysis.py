@@ -1,7 +1,7 @@
 import pandas as pd
 import itertools
 from transformers import pipeline
-
+from tqdm import tqdm
 INPUT_FILE = "data/responses/responses.csv"
 OUTPUT_FILE = "analysis/results/contradiction_results.csv"
 
@@ -19,8 +19,9 @@ nli = pipeline(
 )
 
 results = []
+groups = list(df.groupby(["model", "temperature", "qid"]))
 
-for (model, temperature, qid), group in df.groupby(["model", "temperature", "qid"]):
+for (model, temperature, qid), group in tqdm(groups, desc="Analyzing Contradictions"):
 
     responses = group["response"].tolist()
 
@@ -35,7 +36,7 @@ for (model, temperature, qid), group in df.groupby(["model", "temperature", "qid
         result = nli({
             "text": r1_short,
             "text_pair": r2_short
-        })
+        }, truncation=True)
         # handle both list and dict outputs
         if isinstance(result, list):
             label = result[0]["label"]
