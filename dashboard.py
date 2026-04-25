@@ -5,189 +5,206 @@ import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="LLM Stability Analyzer", layout="wide")
 
-st.title("LLM Stability & Robustness Analyzer")
+# Global figure settings — prevents zoomed-in rendering
+plt.rcParams.update({
+    "figure.dpi": 80,
+    "font.size": 10,
+    "axes.titlesize": 11,
+    "axes.labelsize": 10,
+})
 
+st.title("LLM Stability & Robustness Analyzer")
 st.write(
-"""
-Interactive dashboard for analyzing **LLM response stability under prompt variations**.
-This framework evaluates multiple models using similarity, variance, contradiction,
-and worst-case robustness metrics.
-"""
+    "Interactive dashboard for analyzing **LLM response stability** under prompt "
+    "variations. Evaluates multiple models using similarity, variance, contradiction, "
+    "and worst-case robustness metrics."
 )
 
+# ── Load data ─────────────────────────────────────────────────────────────────
 final_df = pd.read_csv("analysis/results/final_evaluation.csv")
 heatmap_df = pd.read_csv("analysis/results/prompt_sensitivity_matrix.csv")
-
 q_df = pd.read_csv("data/questions/questions.csv")
 final_df = final_df.merge(q_df[["qid", "category"]], on="qid")
 
-# Let's see if response tracking exists
 try:
     res_df = pd.read_csv("data/responses/responses.csv")
-    has_responses = True
+    has_responses = "response_length" in res_df.columns
 except FileNotFoundError:
+    res_df = None
     has_responses = False
 
-st.header("🏅 Overall Model Stability (All Temperatures Averaged)")
-fig_overall, ax_overall = plt.subplots(figsize=(10, 5))
-overall_df = final_df.groupby("model")["final_stability_score"].mean().sort_values(ascending=False).reset_index()
-sns.barplot(data=overall_df, x="model", y="final_stability_score", palette="viridis", ax=ax_overall)
-ax_overall.set_title("Model vs Overall Mean Stability Score")
-ax_overall.set_ylim(0, 1.05)
-plt.xticks(rotation=25)
-st.pyplot(fig_overall, use_container_width=True)
+try:
+    contr_df = pd.read_csv("analysis/results/contradiction_results.csv")
+    has_contr = True
+except FileNotFoundError:
+    contr_df = None
+    has_contr = False
 
-st.header("Stability vs. Temperature")
-fig_temp, ax_temp = plt.subplots(figsize=(10, 5))
-sns.lineplot(data=final_df, x="temperature", y="final_stability_score", hue="model", marker="o", ax=ax_temp)
-ax_temp.set_title("Average Stability Score Across Temperatures")
-st.pyplot(fig_temp, use_container_width=True)
+# ── Section 1: Overall Model Stability ───────────────────────────────────────
+st.header("1. Overall Model Stability")
+overall_df = (
+    final_df.groupby("model")["final_stability_score"]
+    .mean()
+    .sort_values(ascending=False)
+    .reset_index()
+)
+fig1, ax1 = plt.subplots(figsize=(9, 4))
+sns.barplot(
+    data=overall_df, x="model", y="final_stability_score",
+    hue="model", legend=False, palette="viridis", ax=ax1
+)
+ax1.set_title("Model vs Mean Stability Score (all temperatures)")
+ax1.set_ylim(0, 1.0)
+ax1.set_xlabel("Model")
+ax1.set_ylabel("Stability Score")
+plt.xticks(rotation=20, ha="right")
+plt.tight_layout()
+st.pyplot(fig1, use_container_width=False)
 
-if has_responses and "response_length" in res_df.columns:
-    st.header("Response Length vs. Temperature")
-    fig_len, ax_len = plt.subplots(figsize=(10, 5))
-    sns.lineplot(data=res_df, x="temperature", y="response_length", hue="model", marker="o", ax=ax_len)
-    ax_len.set_title("Average Token Length Across Temperatures")
-    st.pyplot(fig_len, use_container_width=True)
+# ── Section 2: Stability vs Temperature ──────────────────────────────────────
+st.header("2. Stability Score vs Temperature")
+fig2, ax2 = plt.subplots(figsize=(9, 4))
+sns.lineplot(
+    data=final_df, x="temperature", y="final_stability_score",
+    hue="model", marker="o", ax=ax2
+)
+ax2.set_title("Stability Score Across Temperatures")
+ax2.set_xlabel("Temperature")
+ax2.set_ylabel("Stability Score")
+plt.tight_layout()
+st.pyplot(fig2, use_container_width=False)
 
-st.header("Detailed Temperature Analysis")
-selected_temp = st.selectbox("Select Temperature for Detailed View", sorted(final_df["temperature"].unique()))
+# ── Section 3: Response Length vs Temperature (conditional) ──────────────────
+if has_responses:
+    st.header("3. Response Length vs Temperature")
+    fig3, ax3 = plt.subplots(figsize=(9, 4))
+    sns.lineplot(
+        data=res_df, x="temperature", y="response_length",
+        hue="model", marker="o", ax=ax3
+    )
+    ax3.set_title("Average Word Count Across Temperatures")
+    ax3.set_xlabel("Temperature")
+    ax3.set_ylabel("Word Count")
+    plt.tight_layout()
+    st.pyplot(fig3, use_container_width=False)
 
+# ── Section 4: Detailed Temperature Analysis ─────────────────────────────────
+st.header("4. Detailed Temperature Analysis")
+selected_temp = st.selectbox(
+    "Select Temperature",
+    sorted(final_df["temperature"].unique())
+)
 curr_df = final_df[final_df["temperature"] == selected_temp]
 
+# Leaderboard table
 st.subheader("Model Stability Leaderboard")
-
 leaderboard = (
     curr_df.groupby("model")["final_stability_score"]
     .mean()
     .sort_values(ascending=False)
     .reset_index()
 )
+st.dataframe(leaderboard, use_container_width=False)
 
-st.dataframe(leaderboard, use_container_width=True)
-
+# Model stability bar
 st.subheader("Model Stability Comparison")
-
-fig, ax = plt.subplots(figsize=(10,5))
-
+fig4, ax4 = plt.subplots(figsize=(9, 4))
 sns.barplot(
-    data=leaderboard,
-    x="model",
-    y="final_stability_score",
-    hue="model",
-    legend=False,
-    palette="viridis",
-    ax=ax
+    data=leaderboard, x="model", y="final_stability_score",
+    hue="model", legend=False, palette="viridis", ax=ax4
 )
+ax4.set_title(f"Avg Stability Score by Model (T={selected_temp})")
+ax4.set_ylim(0, 1.0)
+ax4.set_xlabel("Model")
+ax4.set_ylabel("Stability Score")
+plt.xticks(rotation=20, ha="right")
+plt.tight_layout()
+st.pyplot(fig4, use_container_width=False)
 
-ax.set_ylabel("Average Stability Score")
-ax.set_xlabel("Model")
-ax.set_title("Average Stability Score by Model")
-
-plt.xticks(rotation=25)
-
-st.pyplot(fig, use_container_width=True)
-
+# Category-wise explorer
 st.subheader("Category-wise Stability Explorer")
-
-selected_model = st.selectbox(
-    "Select Model",
-    curr_df["model"].unique()
-)
-
+selected_model = st.selectbox("Select Model", curr_df["model"].unique())
 model_df = curr_df[curr_df["model"] == selected_model]
-
-fig2, ax2 = plt.subplots(figsize=(12,5))
-
+fig5, ax5 = plt.subplots(figsize=(9, 4))
 sns.barplot(
-    data=model_df,
-    x="category",
-    y="final_stability_score",
-    hue="category",
-    legend=False,
-    palette="magma",
-    ax=ax2
+    data=model_df, x="category", y="final_stability_score",
+    hue="category", legend=False, palette="magma", ax=ax5
 )
+ax5.set_title(f"Category Stability — {selected_model.split('/')[-1]} (T={selected_temp})")
+ax5.set_xlabel("Question Category")
+ax5.set_ylabel("Stability Score")
+plt.xticks(rotation=15, ha="right")
+plt.tight_layout()
+st.pyplot(fig5, use_container_width=False)
 
-ax2.set_ylabel("Stability Score")
-ax2.set_xlabel("Question Category")
-ax2.set_title(f"Stability Scores for {selected_model}")
-
-st.pyplot(fig2, use_container_width=True)
-
-st.subheader("Worst-Case Robustness")
-
-fig3, ax3 = plt.subplots(figsize=(10,5))
-
+# Worst-case robustness
+st.subheader("Worst-Case Robustness (Min Similarity)")
+fig6, ax6 = plt.subplots(figsize=(9, 4))
 sns.barplot(
-    data=curr_df,
-    x="model",
-    y="min_similarity",
-    hue="model",
-    legend=False,
-    palette="coolwarm",
-    ax=ax3
+    data=curr_df, x="model", y="min_similarity",
+    hue="model", legend=False, palette="coolwarm", ax=ax6
 )
+ax6.set_title(f"Worst-Case (Min) Pairwise Similarity (T={selected_temp})")
+ax6.set_xlabel("Model")
+ax6.set_ylabel("Min Similarity")
+plt.xticks(rotation=20, ha="right")
+plt.tight_layout()
+st.pyplot(fig6, use_container_width=False)
 
-ax3.set_ylabel("Minimum Similarity")
-ax3.set_xlabel("Model")
-ax3.set_title("Worst-Case Similarity by Model")
-
-plt.xticks(rotation=25)
-
-st.pyplot(fig3, use_container_width=True)
-
+# Prompt sensitivity heatmap
 st.subheader("Prompt Sensitivity Heatmap")
+curr_heatmap = heatmap_df[heatmap_df["temperature"] == selected_temp]
+pivot = curr_heatmap.pivot(index="prompt1", columns="prompt2", values="similarity")
+fig7, ax7 = plt.subplots(figsize=(9, 5))
+sns.heatmap(pivot, annot=True, fmt=".2f", cmap="viridis", linewidths=0.5, ax=ax7)
+ax7.set_title(f"Prompt Pair Similarity (T={selected_temp})")
+plt.tight_layout()
+st.pyplot(fig7, use_container_width=False)
 
-curr_heatmap_df = heatmap_df[heatmap_df["temperature"] == selected_temp]
-
-pivot = curr_heatmap_df.pivot(
-    index="prompt1",
-    columns="prompt2",
-    values="similarity"
-)
-
-fig4, ax4 = plt.subplots(figsize=(8,6))
-
-sns.heatmap(
-    pivot,
-    annot=True,
-    fmt=".2f",
-    cmap="viridis",
-    linewidths=0.5,
-    ax=ax4
-)
-
-ax4.set_title("Prompt Sensitivity Matrix")
-
-st.pyplot(fig4, use_container_width=True)
-
-st.header("Contradiction & Hallucination Analytics")
-
-try:
-    contr_df = pd.read_csv("analysis/results/contradiction_results.csv")
-    has_contr = True
-except FileNotFoundError:
-    has_contr = False
-
+# ── Section 5: Contradiction Analytics ───────────────────────────────────────
+st.header("5. Contradiction & Hallucination Analytics")
 if has_contr:
-    st.subheader("Contradiction Rate vs Temperature")
-    fig5, ax5 = plt.subplots(figsize=(10, 5))
-    sns.lineplot(data=contr_df, x="temperature", y="contradiction_rate", hue="model", marker="o", ax=ax5)
-    ax5.set_title("How Temperature Impacts Contradictions")
-    st.pyplot(fig5, use_container_width=True)
+    fig8, ax8 = plt.subplots(figsize=(9, 4))
+    sns.lineplot(
+        data=contr_df, x="temperature", y="contradiction_rate",
+        hue="model", marker="o", ax=ax8
+    )
+    ax8.set_title("Contradiction Rate vs Temperature")
+    ax8.set_xlabel("Temperature")
+    ax8.set_ylabel("Contradiction Rate")
+    plt.tight_layout()
+    st.pyplot(fig8, use_container_width=False)
 
-    if has_responses and "response_length" in res_df.columns:
-        st.subheader("Response Length vs Contradiction Rate")
-        len_df = res_df.groupby(["model", "temperature", "qid"])["response_length"].mean().reset_index()
-        merged_len_contr = len_df.merge(contr_df, on=["model", "temperature", "qid"])
-        fig6, ax6 = plt.subplots(figsize=(10, 6))
-        sns.scatterplot(data=merged_len_contr, x="response_length", y="contradiction_rate", hue="model", alpha=0.7, ax=ax6)
-        ax6.set_title("Does verbosity lead to contradictions?")
-        st.pyplot(fig6, use_container_width=True)
+    if has_responses:
+        len_df = (
+            res_df.groupby(["model", "temperature", "qid"])["response_length"]
+            .mean()
+            .reset_index()
+        )
+        merged = len_df.merge(contr_df, on=["model", "temperature", "qid"])
+        fig9, ax9 = plt.subplots(figsize=(9, 4))
+        sns.scatterplot(
+            data=merged, x="response_length", y="contradiction_rate",
+            hue="model", alpha=0.7, ax=ax9
+        )
+        ax9.set_title("Response Length vs Contradiction Rate")
+        ax9.set_xlabel("Avg Response Length (words)")
+        ax9.set_ylabel("Contradiction Rate")
+        plt.tight_layout()
+        st.pyplot(fig9, use_container_width=False)
+else:
+    st.info("Contradiction results not found. Run contradiction_analysis.py first.")
 
-st.subheader("Stability Variance Distribution (Violin Plot)")
-fig7, ax7 = plt.subplots(figsize=(10, 6))
-sns.violinplot(data=final_df, x="model", y="final_stability_score", hue="model", legend=False, palette="muted", inner="quartile", ax=ax7)
-ax7.set_title("Density and Extremes of Stability Scores")
-st.pyplot(fig7, use_container_width=True)
+# ── Section 6: Stability Variance Distribution ────────────────────────────────
+st.header("6. Stability Score Distribution")
+fig10, ax10 = plt.subplots(figsize=(9, 4))
+sns.violinplot(
+    data=final_df, x="model", y="final_stability_score",
+    hue="model", legend=False, palette="muted", inner="quartile", ax=ax10
+)
+ax10.set_title("Density and Extremes of Stability Scores")
+ax10.set_xlabel("Model")
+ax10.set_ylabel("Final Stability Score")
+plt.xticks(rotation=20, ha="right")
+plt.tight_layout()
+st.pyplot(fig10, use_container_width=False)

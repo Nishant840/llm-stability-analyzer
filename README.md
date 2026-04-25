@@ -296,22 +296,34 @@ llm-stability-analyzer/
 │   └── responses/              # Cached LLM responses (checkpointed to disk)
 │
 ├── scripts/
-│   ├── clean_errors.py         # Identifies and removes malformed/incomplete responses
 │   ├── generate_prompts.py     # Generates the 6 prompt variants for each question
-│   └── collect_responses.py    # Handles API calls, retries, and response caching
+│   ├── collect_responses.py    # Handles API calls, retries, and response caching
+│   └── clean_errors.py         # Removes ERROR rows and ghost model rows
+│
+├── models/
+│   └── embedding_model.py      # Loads all-MiniLM-L6-v2 SentenceTransformer
 │
 ├── analysis/
-│   ├── stability_analysis.py         # Computes pairwise similarity, variance, worst-case
-│   ├── contradiction_analysis.py     # Runs bart-large-mnli NLI contradiction detection
-│   ├── final_evaluation.py           # Aggregates all metrics into the stability score
-│   ├── prompt_sensitivity.py         # Identifies which prompt types are most destabilizing
-│   ├── prompt_sensitivity_matrix.py  # Builds the full prompt x model sensitivity matrix
-│   ├── prompt_heatmap.py             # Generates pairwise similarity heatmaps
-│   └── visualization.py              # Violin plots, scatter plots, bar charts
+│   ├── scripts/
+│   │   ├── stability_analysis.py         # Computes pairwise similarity, variance, worst-case
+│   │   ├── contradiction_analysis.py     # Runs bart-large-mnli NLI contradiction detection
+│   │   ├── final_evaluation.py           # Aggregates all metrics into the stability score
+│   │   ├── prompt_sensitivity.py         # Pairwise similarities grouped by prompt type
+│   │   ├── prompt_sensitivity_matrix.py  # Aggregates prompt pair mean similarities
+│   │   ├── prompt_heatmap.py             # Generates pairwise similarity heatmaps
+│   │   └── visualization.py              # All 9 static plots
+│   ├── results/                # Output CSVs (final_evaluation.csv, etc.)
+│   └── plots/                  # Output PNG plots
 │
-├── dashboard.py        # Interactive Streamlit dashboard
-├── verify_models.py    # Confirms API access to all four target models
-├── run_pipeline.py     # Master script — runs all stages end-to-end
+├── experiments/
+│   └── notes.md                # Experiment notes and observations
+│
+├── notebooks/                  # Jupyter notebooks (exploratory analysis)
+│
+├── dashboard.py                # Interactive Streamlit dashboard
+├── verify_models.py            # Confirms API access to all four target models
+├── run_pipeline.py             # Master script — runs all stages end-to-end
+├── requirements.txt            # Python dependency list
 └── README.md
 
 ```
@@ -416,6 +428,7 @@ The pipeline executes the following stages in order:
 | 5    | Contradiction Detection  | NLI-based contradiction analysis                        |
 | 6    | Stability Scoring        | Weighted aggregation of all metrics                     |
 | 7    | Visualization            | Heatmaps, plots, and summaries                          |
+
 > **Expected runtime:** Approximately 2–4 hours for a full run, dominated by API latency. The checkpoint engine means you can safely interrupt and resume at any point.
 
 ----------
